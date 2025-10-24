@@ -6,17 +6,17 @@ import {
     NavbarBrand,
     Nav,
     NavItem,
-    NavLink
+    NavLink,
 } from 'reactstrap';
 
-export const NavBar = (args) => {
+export const NavBar = () => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggle = () => setIsOpen(!isOpen);
 
     return (
         <div>
-            <Navbar {...args}>
+            <Navbar  color='secondary' expand='md' >
                 <NavbarBrand href="/">
                     <img
                         alt='logo'
@@ -41,5 +41,7 @@ export const NavBar = (args) => {
                 </Collapse>
             </Navbar>
         </div>
-    );
+);
 }
+
+

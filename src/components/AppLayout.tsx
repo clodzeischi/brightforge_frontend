@@ -4,7 +4,7 @@ import {NavBar} from "./NavBar.tsx";
 export const AppLayout = () => {
     return (
         <>
-            <NavBar color='secondary' expand='md' />
+            <NavBar/>
             <main>
                 <Outlet />
             </main>

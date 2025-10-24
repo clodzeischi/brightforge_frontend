@@ -2,10 +2,13 @@ import {useEffect, useState} from "react";
 import type {Color} from "../Types/ColorType.ts";
 import {api} from "../axiosClient.ts";
 import {Button, Table} from "reactstrap";
+import {ModalColor} from "./ModalColor.tsx";
 
 
 export const TableColors = () => {
     const [colors, setColors] = useState<Color[]>([]);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [editingColor, setEditingColor] = useState<Color | null>(null);
 
     useEffect(() => {
             api.get<Color[]>('/color')
@@ -13,13 +16,29 @@ export const TableColors = () => {
                 .catch((err) => console.error("Unable to get colors.", err));
         }, []);
 
-    const [modalOpen, setModalOpen] = useState(false);
-    const [editingColor, setEditingColor] = useState<Color | null>(null);
+    const handleSubmit = async (data: Color) => {
+        try {
+            if (editingColor) {
+                await api.put(`/color/${data.id}`, data);
+            } else {
+                await api.post('/color', data);
+            }
+            const updated = await api.get<Color[]>('/color');
+            setColors(updated.data);
+        } catch (err) {
+            console.error("Failed to save color", err);
+        } finally {
+            setModalOpen(false);
+        }
+    };
 
     return (
         <div className='m-5'>
             Colors
-            <Button className='mx-3'>Add</Button>
+            <Button className='mx-3' onClick={ () => {
+                setEditingColor(null);
+                setModalOpen(true);
+            }}>Add</Button>
                 <Table>
                     <thead>
                     <tr>
@@ -47,13 +66,20 @@ export const TableColors = () => {
                                     }}
                                 />
                             </td>
-                            <td><Button>Edit</Button></td>
+                            <td><Button onClick={ () => {
+                                setEditingColor(color);
+                                setModalOpen(true);
+                            }}>Edit</Button></td>
                             <td><Button>Delete</Button></td>
                         </tr>
                     ))}
                     </tbody>
                 </Table>
-
+            <ModalColor
+                isOpen={modalOpen}
+                toggle={() => setModalOpen(false)}
+                initialData={editingColor ?? undefined}
+                onSubmit={handleSubmit}/>
         </div>
     )
 }
