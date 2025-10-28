@@ -1,16 +1,23 @@
 import {useEffect, useState} from "react";
-import {api} from "../axiosClient.ts";
 import {Button, Table} from "reactstrap";
 import type {Variant} from "../Types/VariantType.ts";
+import {deleteVariantByID, getAllVariants} from "../axiosClient.ts";
 
 export const TableVariants = () => {
     const [variants, setVariants] = useState<Variant[]>([]);
 
     useEffect(() => {
-        api.get<Variant[]>('/variant')
-            .then(res => setVariants(res.data))
-            .catch((err) => console.error("Unable to get variants.", err));
+        const updateVariants = async () => {
+            const result = await getAllVariants();
+            setVariants(result);
+        }
+
+        updateVariants();
     }, []);
+
+    const handleDelete = (id: number) => {
+        deleteVariantByID(id);
+    }
 
     return (
         <div className='m-5'>
@@ -45,7 +52,7 @@ export const TableVariants = () => {
                         <td>{variant.qty}</td>
                         <td>{variant.lifecycleStatus}</td>
                         <td><Button>Edit</Button></td>
-                        <td><Button>Delete</Button></td>
+                        <td><Button onClick={() => handleDelete(variant.id)}>Delete</Button></td>
                     </tr>
                 ))}
                 </tbody>

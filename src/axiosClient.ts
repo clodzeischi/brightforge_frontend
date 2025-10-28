@@ -127,9 +127,9 @@ export const getVariantByID = async (id: number): Promise<Variant | null> => {
     }
 }
 
-export const getVariantsByColorCode = async (colorLabel: string): Promise<Variant[]> => {
+export const getVariantsByColorCode = async (colorCode: string): Promise<Variant[]> => {
     try {
-        const res = await axios.get('http://localhost:8080/api/variant/bycolor', {params: {colorLabel}});
+        const res = await axios.get('http://localhost:8080/api/variant/bycolor', {params: {colorCode}});
         return res.data;
     } catch (err) {
         alert('Unable to get variants.');

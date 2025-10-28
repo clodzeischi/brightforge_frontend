@@ -1,17 +1,24 @@
 import {useEffect, useState} from "react";
-import {api} from "../axiosClient.ts";
 import {Button, Table} from "reactstrap";
 import type {Product} from "../Types/ProductType.ts";
+import {deleteProductByID, getAllProducts} from "../axiosClient.ts";
 
 
 export const TableProducts = () => {
     const [products, setProducts] = useState<Product[]>([]);
 
     useEffect(() => {
-        api.get<Product[]>('/product')
-            .then(res => setProducts(res.data))
-            .catch((err) => console.error("Unable to get products.", err));
+        const updateProducts = async () => {
+            const result = await getAllProducts();
+            setProducts(result);
+        }
+
+        updateProducts();
     }, []);
+
+    const handleDelete = (id: number) => {
+        deleteProductByID(id);
+    }
 
     return (
         <div className='m-5'>
@@ -36,7 +43,7 @@ export const TableProducts = () => {
                         <td>{product.name}</td>
                         <td>{product.description}</td>
                         <td><Button>Edit</Button></td>
-                        <td><Button>Delete</Button></td>
+                        <td><Button onClick={() => {handleDelete(product.id)}}>Delete</Button></td>
                     </tr>
                 ))}
                 </tbody>

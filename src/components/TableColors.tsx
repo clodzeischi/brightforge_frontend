@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import type {Color} from "../Types/ColorType.ts";
-import {api} from "../axiosClient.ts";
+import {createColor, deleteColorByID, getAllColors, putColor} from "../axiosClient.ts";
 import {Button, Table} from "reactstrap";
 import {ModalColor} from "./ModalColor.tsx";
 
@@ -11,26 +11,35 @@ export const TableColors = () => {
     const [editingColor, setEditingColor] = useState<Color | null>(null);
 
     useEffect(() => {
-            api.get<Color[]>('/color')
-                .then(res => setColors(res.data))
-                .catch((err) => console.error("Unable to get colors.", err));
+            const updateColors = async () => {
+                const result = await getAllColors();
+                setColors(result);
+            }
+
+            updateColors();
         }, []);
 
     const handleSubmit = async (data: Color) => {
         try {
             if (editingColor) {
-                await api.put(`/color/${data.id}`, data);
+                await putColor(data);
             } else {
-                await api.post('/color', data);
+                await createColor(data);
             }
-            const updated = await api.get<Color[]>('/color');
-            setColors(updated.data);
+            const updated = await getAllColors();
+            setColors(updated);
         } catch (err) {
             console.error("Failed to save color", err);
         } finally {
             setModalOpen(false);
         }
     };
+
+    const handleDelete = async (id: number) => {
+        await deleteColorByID(id);
+        const updatedColors = await getAllColors();
+        setColors(updatedColors);
+    }
 
     return (
         <div className='m-5'>
@@ -70,7 +79,7 @@ export const TableColors = () => {
                                 setEditingColor(color);
                                 setModalOpen(true);
                             }}>Edit</Button></td>
-                            <td><Button>Delete</Button></td>
+                            <td><Button onClick={() => {handleDelete(color.id)}}>Delete</Button></td>
                         </tr>
                     ))}
                     </tbody>

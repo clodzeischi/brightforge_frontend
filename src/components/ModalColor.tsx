@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Button,
     Modal,
     ModalHeader,
@@ -10,11 +10,15 @@ import {Button,
     Input} from 'reactstrap';
 import type {Color} from "../Types/ColorType.ts";
 
-export const ModalColor = (
-    isOpen: boolean,
-    toggle: () => void,
-    initialData?: Partial<Color>,
-    onSubmit: (data: Color) => Promise<void>) => {
+/*
+type ModalColorProps = {
+    isOpen: boolean;
+    toggle: () => void;
+    initialData?: Partial<Color>;
+    onSubmit: (data: Color) => Promise<void>;
+}; */
+
+export const ModalColor = ({isOpen, toggle, initialData, onSubmit}) => {
 
     const [form, setForm] = useState<Partial<Color>>({
         code: '',
@@ -31,8 +35,13 @@ export const ModalColor = (
         }
     }, [initialData]);
 
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
+    };
+
     const handleSubmit = () => {
-        onSubmit(form);
+        onSubmit(form as Color);
         toggle();
     }
 
@@ -47,7 +56,7 @@ export const ModalColor = (
                             name="code"
                             value={form.code ?? ""}
                             onChange={handleChange}
-                            placeholder="e.g. BRGHT-001"
+                            placeholder="black"
                         />
                     </FormGroup>
                     <FormGroup>
@@ -56,7 +65,7 @@ export const ModalColor = (
                             name="label"
                             value={form.label ?? ""}
                             onChange={handleChange}
-                            placeholder="e.g. Bright Gold"
+                            placeholder="Doom black"
                         />
                     </FormGroup>
                     <FormGroup>
@@ -73,7 +82,7 @@ export const ModalColor = (
             </ModalBody>
             <ModalFooter>
                 <Button color="primary" onClick={handleSubmit}>
-                    Do Something
+                    Submit
                 </Button>{' '}
                 <Button color="secondary" onClick={toggle}>
                     Cancel
