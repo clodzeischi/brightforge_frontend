@@ -12,18 +12,13 @@ type ModalProductProps = {
 
 export const ModalProduct = ({isOpen, toggle, initialData, onSubmit} : ModalProductProps) => {
 
-    const [form, setForm] = useState<Product>({
-        slug: '',
-        name: '',
-        description: '',
-        ...initialData
-    });
+    const [form, setForm] = useState<Product>({id: undefined, slug: '', name: '', description: ''});
 
     useEffect(() => {
         if (initialData) {
             setForm({ ...initialData });
         } else {
-            setForm({ slug: '', name: '', description: '' });
+            setForm({ id: undefined, slug: '', name: '', description: '' });
         }
     }, [initialData]);
 
@@ -44,7 +39,7 @@ export const ModalProduct = ({isOpen, toggle, initialData, onSubmit} : ModalProd
                 <Form>
                     <FormGroup>
                         <Label for="slug">Slug</Label>
-                        <Input
+                        <Input id="slug"
                             name="slug"
                             value={form.slug ?? ""}
                             onChange={handleChange}
@@ -53,7 +48,7 @@ export const ModalProduct = ({isOpen, toggle, initialData, onSubmit} : ModalProd
                     </FormGroup>
                     <FormGroup>
                         <Label for="name">Name</Label>
-                        <Input
+                        <Input id="name"
                             name="name"
                             value={form.name ?? ""}
                             onChange={handleChange}
@@ -62,7 +57,7 @@ export const ModalProduct = ({isOpen, toggle, initialData, onSubmit} : ModalProd
                     </FormGroup>
                     <FormGroup>
                         <Label for="description">Description</Label>
-                        <Input
+                        <Input id="description"
                             name="description"
                             value={form.description ?? ""}
                             onChange={handleChange}

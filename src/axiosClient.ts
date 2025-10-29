@@ -37,7 +37,7 @@ export const getColorByID = async (id: number): Promise<Color | null> => {
 
 export const putColor = async (color: Color): Promise<Color | null> => {
     try {
-        const res = await axios.put(`${baseURL}/color`, color);
+        const res = await axios.put(`${baseURL}/color/${color.id}`, color);
         return res.data;
     } catch (err) {
         alert(`Unable to update color. ${err}`);
@@ -85,7 +85,7 @@ export const getProductByID = async (id: number): Promise<Product | null> => {
 
 export const putProduct = async (product: Product): Promise<Product | null> => {
     try {
-        const res = await axios.put(`${baseURL}/product`, product);
+        const res = await axios.put(`${baseURL}/product/${product.id}`, product);
         return res.data;
     } catch (err) {
         alert(`Unable to update product. ${err}`)

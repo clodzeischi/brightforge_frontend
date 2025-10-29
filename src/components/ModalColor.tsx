@@ -12,13 +12,13 @@ type ModalColorProps = {
 
 export const ModalColor = ({isOpen, toggle, initialData, onSubmit} : ModalColorProps) => {
 
-    const [form, setForm] = useState<Color>({id: NaN, code: '', label: '', hex: '', ...initialData});
+    const [form, setForm] = useState<Color>({id: undefined, code: '', label: '', hex: ''});
 
     useEffect(() => {
         if (initialData) {
             setForm({ ...initialData });
         } else {
-            setForm({ code: '', label: '', hex: '' });
+            setForm({ id: undefined, code: '', label: '', hex: '' });
         }
     }, [initialData]);
 
@@ -39,7 +39,7 @@ export const ModalColor = ({isOpen, toggle, initialData, onSubmit} : ModalColorP
                 <Form>
                     <FormGroup>
                         <Label for="code">Code</Label>
-                        <Input
+                        <Input id="code"
                             name="code"
                             value={form.code ?? ""}
                             onChange={handleChange}
@@ -48,7 +48,7 @@ export const ModalColor = ({isOpen, toggle, initialData, onSubmit} : ModalColorP
                     </FormGroup>
                     <FormGroup>
                         <Label for="label">Label</Label>
-                        <Input
+                        <Input id="label"
                             name="label"
                             value={form.label ?? ""}
                             onChange={handleChange}
@@ -57,7 +57,7 @@ export const ModalColor = ({isOpen, toggle, initialData, onSubmit} : ModalColorP
                     </FormGroup>
                     <FormGroup>
                         <Label for="hex">Hex</Label>
-                        <Input
+                        <Input id="hex"
                             name="hex"
                             value={form.hex ?? ""}
                             onChange={handleChange}

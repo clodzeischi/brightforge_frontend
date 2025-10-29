@@ -5,6 +5,7 @@ import {Button, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, Mo
 import type {Color} from "../Types/ColorType.ts";
 import type {Product} from "../Types/ProductType.ts";
 import {getAllColors, getAllProducts} from "../axiosClient.ts";
+import type {ProductStatus} from "../Types/StatusType.ts";
 
 type ModalVariantProps = {
     isOpen: boolean;
@@ -16,13 +17,12 @@ type ModalVariantProps = {
 export const ModalVariant = ({isOpen, toggle, initialData, onSubmit} : ModalVariantProps) => {
 
     const [form, setForm] = useState<Variant>({
+        id: undefined,
         product: {slug: "", name: "", description: ""},
         color: {code: "", label: "", hex: ""},
         imageUrl: '',
         qty: 1,
-        lifecycleStatus: 'ACTIVE',
-        ...initialData}
-    );
+        lifecycleStatus: 'ACTIVE',});
 
     const [products, setProducts] = useState<Product[]>([]);
     const [colors, setColors] = useState<Color[]>([]);
@@ -32,11 +32,12 @@ export const ModalVariant = ({isOpen, toggle, initialData, onSubmit} : ModalVari
             setForm({ ...initialData });
         } else {
             setForm({
+                id: undefined,
                 product: {slug: "", name: "", description: ""},
                 color: {code: "", label: "", hex: ""},
                 imageUrl: '',
                 qty: 1,
-                lifecycleStatus: 'ACTIVE'});
+                lifecycleStatus: 'ACTIVE',});
         }
 
         async function updateProductsAndColors() {
@@ -120,7 +121,7 @@ export const ModalVariant = ({isOpen, toggle, initialData, onSubmit} : ModalVari
                     </FormGroup>
                     <FormGroup>
                         <Label for="qty">Quantity</Label>
-                        <Input
+                        <Input id="qty"
                             name="qty"
                             value={form.qty ?? 1}
                             onChange={handleChange}
@@ -132,11 +133,19 @@ export const ModalVariant = ({isOpen, toggle, initialData, onSubmit} : ModalVari
                         <Label for="status">
                             Select
                         </Label>
-                        <Input id="status" name="status" type="select">
-                            <option>ACTIVE</option>
-                            <option>OOS_PERMANENT</option>
-                            <option>RETIRED</option>
-                            <option>DELETED</option>
+                        <Input
+                            id="status"
+                            name="lifecycleStatus"
+                            type="select"
+                            value={form.lifecycleStatus ?? 'ACTIVE'}
+                            onChange={(e) => {
+                                const selected = e.target.value as ProductStatus;
+                                setForm((prev) => ({ ...prev, lifecycleStatus: selected }));
+                            }}>
+                            <option value='ACTIVE'>ACTIVE</option>
+                            <option value='OOS_PERMANENT'>OOS_PERMANENT</option>
+                            <option value='RETIRED'>RETIRED</option>
+                            <option value='DELETED'>DELETED</option>
                         </Input>
                     </FormGroup>
                 </Form>
