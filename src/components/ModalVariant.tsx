@@ -1,0 +1,154 @@
+import type {Variant} from "../Types/VariantType.ts";
+import * as React from "react";
+import {useEffect, useState} from "react";
+import {Button, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader} from "reactstrap";
+import type {Color} from "../Types/ColorType.ts";
+import type {Product} from "../Types/ProductType.ts";
+import {getAllColors, getAllProducts} from "../axiosClient.ts";
+
+type ModalVariantProps = {
+    isOpen: boolean;
+    toggle: () => void;
+    initialData?: Variant;
+    onSubmit: (data: Variant) => Promise<void>;
+}
+
+export const ModalVariant = ({isOpen, toggle, initialData, onSubmit} : ModalVariantProps) => {
+
+    const [form, setForm] = useState<Variant>({
+        product: {slug: "", name: "", description: ""},
+        color: {code: "", label: "", hex: ""},
+        imageUrl: '',
+        qty: 1,
+        lifecycleStatus: 'ACTIVE',
+        ...initialData}
+    );
+
+    const [products, setProducts] = useState<Product[]>([]);
+    const [colors, setColors] = useState<Color[]>([]);
+
+    useEffect(() => {
+        if (initialData) {
+            setForm({ ...initialData });
+        } else {
+            setForm({
+                product: {slug: "", name: "", description: ""},
+                color: {code: "", label: "", hex: ""},
+                imageUrl: '',
+                qty: 1,
+                lifecycleStatus: 'ACTIVE'});
+        }
+
+        async function updateProductsAndColors() {
+            setProducts(await getAllProducts());
+            setColors(await getAllColors());
+        }
+
+        updateProductsAndColors();
+
+    }, [initialData]);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setForm((prev) => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmit = () => {
+        onSubmit(form as Variant)
+            .then(() => toggle());
+    }
+
+    return (
+        <Modal isOpen={isOpen} toggle={toggle}>
+            <ModalHeader toggle={toggle}>Add/edit Variant</ModalHeader>
+            <ModalBody>
+                <Form>
+                    <FormGroup>
+                        <Label for="product">
+                            Product
+                        </Label>
+                        <Input
+                            id="product"
+                            name="product"
+                            type="select"
+                            value={form.product?.id ?? ''}
+                            onChange={(e) => {
+                                const selectedId = Number(e.target.value);
+                                const selectedProduct = products.find(p => p.id === selectedId);
+                                if (selectedProduct) {
+                                    setForm(prev => ({ ...prev, product: selectedProduct }));
+                                }
+                            }}>
+                            {products.map((product: Product) => (
+                                <option key={product.id} value={product.id}>
+                                    {product.name}
+                                </option>
+                            ))}
+                        </Input>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="color">
+                            Select
+                        </Label>
+                        <Input
+                            id="color"
+                            name="color"
+                            type="select"
+                            value={form.color?.id ?? ''}
+                            onChange={(e) => {
+                                const selectedId = Number(e.target.value);
+                                const selectedColor = colors.find(c => c.id === selectedId);
+                                if (selectedColor) {
+                                    setForm(prev => ({ ...prev, color: selectedColor }));
+                                }
+                            }}>
+                            {colors.map((color: Color) => (
+                                <option key={color.id} value={color.id}>
+                                    {color.label}
+                                </option>
+                            ))}
+                        </Input>
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="imageUrl">Image file</Label>
+                        <Input
+                            name="imageUrl"
+                            value={form.imageUrl ?? ""}
+                            onChange={handleChange}
+                            placeholder="placeholder.png"
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="qty">Quantity</Label>
+                        <Input
+                            name="qty"
+                            value={form.qty ?? 1}
+                            onChange={handleChange}
+                            placeholder="1"
+                            type={"number"}
+                        />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="status">
+                            Select
+                        </Label>
+                        <Input id="status" name="status" type="select">
+                            <option>ACTIVE</option>
+                            <option>OOS_PERMANENT</option>
+                            <option>RETIRED</option>
+                            <option>DELETED</option>
+                        </Input>
+                    </FormGroup>
+                </Form>
+            </ModalBody>
+            <ModalFooter>
+                <Button color="primary" onClick={handleSubmit}>
+                    Submit
+                </Button>{' '}
+                <Button color="secondary" onClick={toggle}>
+                    Cancel
+                </Button>
+            </ModalFooter>
+        </Modal>
+    );
+}

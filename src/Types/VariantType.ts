@@ -1,14 +1,15 @@
 import type {Product} from "./ProductType.ts";
 import type {Color} from "./ColorType.ts";
+import type {ProductStatus} from "./StatusType.ts";
 
 export type Variant = {
-    id: number,
+    id?: number,
     product: Product,
     color: Color,
     imageUrl: string,
-    rating: number,
+    rating?: number,
     qty: number,
-    lifecycleStatus: 'ACTIVE' | 'OOS_PERMANENT' | 'RETIRED' | 'DELETED'
-    createdAt: string,
-    updatedAt: string
+    lifecycleStatus: ProductStatus,
+    createdAt?: string,
+    updatedAt?: string
 }

@@ -7,9 +7,9 @@ export const Employee = () => {
 
     return (
         <Container className='flex-column'>
-            <TableColors />
-            <TableProducts />
             <TableVariants />
+            <TableProducts />
+            <TableColors />
         </Container>
     )
 }

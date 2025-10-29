@@ -10,12 +10,12 @@ export const TableColors = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [editingColor, setEditingColor] = useState<Color | null>(null);
 
-    useEffect(() => {
-            const updateColors = async () => {
-                const result = await getAllColors();
-                setColors(result);
-            }
+    const updateColors = async () => {
+        const result: Color[] = await getAllColors();
+        setColors(result);
+    }
 
+    useEffect(() => {
             updateColors();
         }, []);
 
@@ -26,8 +26,7 @@ export const TableColors = () => {
             } else {
                 await createColor(data);
             }
-            const updated = await getAllColors();
-            setColors(updated);
+            await updateColors();
         } catch (err) {
             console.error("Failed to save color", err);
         } finally {
@@ -37,8 +36,7 @@ export const TableColors = () => {
 
     const handleDelete = async (id: number) => {
         await deleteColorByID(id);
-        const updatedColors = await getAllColors();
-        setColors(updatedColors);
+        await updateColors();
     }
 
     return (
@@ -55,8 +53,8 @@ export const TableColors = () => {
                         <th>code</th>
                         <th>label</th>
                         <th>swatch</th>
-                        <th>edit</th>
-                        <th>delete</th>
+                        <th style={{ width: '80px' }}>edit</th>
+                        <th style={{ width: '80px' }}>delete</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -75,11 +73,11 @@ export const TableColors = () => {
                                     }}
                                 />
                             </td>
-                            <td><Button onClick={ () => {
+                            <td><Button style={{ width: '80px' }} onClick={ () => {
                                 setEditingColor(color);
                                 setModalOpen(true);
                             }}>Edit</Button></td>
-                            <td><Button onClick={() => {handleDelete(color.id)}}>Delete</Button></td>
+                            <td><Button style={{ width: '80px' }} onClick={() => {if (color.id) handleDelete(color.id)}}>Delete</Button></td>
                         </tr>
                     ))}
                     </tbody>

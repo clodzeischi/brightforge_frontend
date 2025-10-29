@@ -1,31 +1,18 @@
 import {useEffect, useState} from 'react';
-import {Button,
-    Modal,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    Form,
-    FormGroup,
-    Label,
-    Input} from 'reactstrap';
+import {Button, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader} from 'reactstrap';
 import type {Color} from "../Types/ColorType.ts";
+import * as React from "react";
 
-/*
 type ModalColorProps = {
     isOpen: boolean;
     toggle: () => void;
-    initialData?: Partial<Color>;
+    initialData?: Color;
     onSubmit: (data: Color) => Promise<void>;
-}; */
+}
 
-export const ModalColor = ({isOpen, toggle, initialData, onSubmit}) => {
+export const ModalColor = ({isOpen, toggle, initialData, onSubmit} : ModalColorProps) => {
 
-    const [form, setForm] = useState<Partial<Color>>({
-        code: '',
-        label: '',
-        hex: '',
-        ...initialData
-    });
+    const [form, setForm] = useState<Color>({id: NaN, code: '', label: '', hex: '', ...initialData});
 
     useEffect(() => {
         if (initialData) {
@@ -35,14 +22,14 @@ export const ModalColor = ({isOpen, toggle, initialData, onSubmit}) => {
         }
     }, [initialData]);
 
-    const handleChange = (e) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = () => {
-        onSubmit(form as Color);
-        toggle();
+        onSubmit(form as Color)
+            .then(() => toggle());
     }
 
     return (
