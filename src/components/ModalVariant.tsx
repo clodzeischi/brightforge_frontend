@@ -51,8 +51,12 @@ export const ModalVariant = ({isOpen, toggle, initialData, onSubmit} : ModalVari
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setForm((prev) => ({ ...prev, [name]: value }));
+        setForm((prev) => ({
+            ...prev,
+            [name]: name === "qty" ? Number(value) : value
+        }));
     };
+
 
     const handleSubmit = () => {
         onSubmit(form as Variant)
@@ -123,10 +127,13 @@ export const ModalVariant = ({isOpen, toggle, initialData, onSubmit} : ModalVari
                         <Label for="qty">Quantity</Label>
                         <Input id="qty"
                             name="qty"
+                            type="number"
                             value={form.qty ?? 1}
-                            onChange={handleChange}
-                            placeholder="1"
-                            type={"number"}
+                               onChange={(e) => {
+                                const quantity = Number(e.target.value);
+                                setForm((prev) => ({ ...prev, qty: quantity }));
+                            }}
+                               placeholder="1"
                         />
                     </FormGroup>
                     <FormGroup>

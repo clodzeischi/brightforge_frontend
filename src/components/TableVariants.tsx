@@ -68,7 +68,7 @@ export const TableVariants = () => {
                             <img
                                 src={`/${variant.imageUrl}`}
                                 alt={`Variant ${variant.id}`}
-                                style={{ width: '48px', height: '48px', objectFit: 'cover'}}
+                                style={{ width: '48px', height: '48px', objectFit: 'contain'}}
                             />
                         </td>
                         <td>{variant.qty}</td>
