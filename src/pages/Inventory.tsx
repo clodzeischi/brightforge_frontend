@@ -2,17 +2,27 @@ import {ProductCard} from "../components/ProductCard.tsx";
 import {useEffect, useState} from "react";
 import type {Variant} from "../Types/VariantType.ts";
 import {getAllVariants} from "../axiosClient.ts";
-import {Col, Row} from "reactstrap";
+import {Button, Col, Row} from "reactstrap";
 import type {Product} from "../Types/ProductType.ts";
+import {OffcanvasColorpicker} from "../components/OffcanvasColorpicker.tsx";
 
 export const Inventory = () => {
 
     const [variants, setVariants] = useState<Variant[]>([]);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [selectedColor, setSelectedColor] = useState<string | undefined>('');
+
+    const toggleFilter = () => setIsFilterOpen(!isFilterOpen);
 
     const updateVariants = async () => {
         const result: Variant[] = await getAllVariants();
         setVariants(result);
     }
+
+    const filteredVariants = selectedColor
+        ? variants.filter(v => v.color?.label.toLowerCase() === selectedColor.toLowerCase())
+        : variants;
+
 
     useEffect(() => {
         updateVariants();
@@ -20,9 +30,19 @@ export const Inventory = () => {
 
     return (
         <div className='p-5'>
+            <Button color="primary" onClick={toggleFilter} className="mb-3">
+                Filter by Color
+            </Button>
+
+            <OffcanvasColorpicker isOpen={isFilterOpen}
+                                  toggle={toggleFilter}
+                                  color={selectedColor}
+                                  setColor={setSelectedColor}
+                                  variants={variants}/>
+
             <Row>
                 {Object.values(
-                    variants.reduce((acc, variant) => {
+                    filteredVariants.reduce((acc, variant) => {
                         const key: number = variant.product.id || 0;
                         if (!acc[key]) {
                             acc[key] = { product: variant.product, variants: [] };

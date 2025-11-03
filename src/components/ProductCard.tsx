@@ -1,4 +1,4 @@
-import {Button, Card, CardBody, CardSubtitle, CardTitle} from "reactstrap";
+import {Button, Card, CardBody, CardSubtitle, CardText, CardTitle} from "reactstrap";
 import type {Variant} from "../Types/VariantType.ts";
 import type {Product} from "../Types/ProductType.ts";
 import {useState} from "react";
@@ -15,8 +15,11 @@ export const ProductCard = ({product, variants} : {product : Product, variants: 
                 <CardTitle tag="h5">
                     {product.name}
                 </CardTitle>
-                <CardSubtitle className="mb-2 text-muted" tag="h6">
+                <CardText className="mb-2 text-muted" tag="h6">
                     {product.description}
+                </CardText>
+                <CardSubtitle className="mb-2 text-muted" tag="h6">
+                    Available: {variants[varDisplayed].qty}
                 </CardSubtitle>
 
                 <div style={{display: 'flex', gap: '6px', marginBottom: '12px', flexWrap: 'wrap'}}>
