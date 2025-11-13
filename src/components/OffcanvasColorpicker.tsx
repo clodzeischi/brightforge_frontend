@@ -5,7 +5,7 @@ type OffcanvasProps = {
     isOpen: boolean;
     toggle: () => void;
     color: string | undefined;
-    setColor: (data: string | undefined) => void;
+    setColor: (data: string) => void;
     variants: Variant[]
 }
 
@@ -22,7 +22,7 @@ export const OffcanvasColorpicker = (
                         type="select"
                         id="colorSelect"
                         value={color ?? ''}
-                        onChange={(e) => setColor(e.target.value || undefined)}
+                        onChange={(e) => setColor(e.target.value || '')}
                     >
                         <option value="">All Colors</option>
                         {Array.from(

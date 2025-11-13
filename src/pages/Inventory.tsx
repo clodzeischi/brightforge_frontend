@@ -10,7 +10,7 @@ export const Inventory = () => {
 
     const [variants, setVariants] = useState<Variant[]>([]);
     const [isFilterOpen, setIsFilterOpen] = useState(false);
-    const [selectedColor, setSelectedColor] = useState<string | undefined>('');
+    const [selectedColor, setSelectedColor] = useState<string>('');
 
     const toggleFilter = () => setIsFilterOpen(!isFilterOpen);
 
